@@ -1,10 +1,11 @@
 package TestSort;
 
-import Heap.TestHeap;
 
-import java.sql.SQLOutput;
+
+
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Stack;
 
 /**
  * @ClassName TestSort
@@ -161,6 +162,102 @@ public class TestSort {
             }
         }
     }
+    //快速排序-递归
+    public static void quickSort(int[] array,int left,int right){
+            if(left>=right){
+                return;
+            }
+           int mid= partion4(array,left,right);
+           quickSort(array,left,mid-1);
+           quickSort(array,mid+1,right);
+    }
+    //快速排序-非递归
+    public static void quickSort1(int[] array){
+        Stack<Integer> stack=new Stack<>();
+        stack.push(array.length-1);
+        stack.push(0);
+        while(!stack.empty()){
+            int left=stack.pop();
+            int right=stack.pop();
+            if(left>right){
+                continue;
+            }
+            int mid=partion(array,left,right);
+            stack.push(right);
+            stack.push(mid+1);
+
+            stack.push(mid-1);
+            stack.push(left);
+        }
+    }
+    //hoare
+    private static int partion(int[] array,int left,int right){
+        int i=left;
+        int j=right;
+        int key=array[left];
+        while(j>i){
+            while(array[j]>=key&&i<j){
+                j--;
+            }
+            while(array[i]<=key&&i<j){
+                i++;
+            }
+            swamp(array,i,j);
+        }
+        swamp(array,i,left);
+        return i;
+    }
+    //挖坑
+    private static int partion2(int[] array,int left,int right){
+        int i=left;
+        int j=right;
+        int key=array[left];
+        while(j>i){
+            while(array[j]>=key&&i<j){
+                j--;
+            }
+            array[i]=array[j];
+            while(array[i]<=key&&i<j){
+                i++;
+            }
+           array[j]=array[i];
+        }
+       array[i]=key;
+        return i;
+    }
+    //前后遍历
+    private static int partion3(int[] array,int left,int right){
+        int d=left+1;
+        int key=array[left];
+        int i=0;
+        for (i = left+1; i <array.length ; i++) {
+              if(array[i]<key){
+                swamp(array,i,d);
+                d++;
+             }
+        }
+        swamp(array,left,d-1);
+        return d-1;
+    }
+    //优化版
+    private static int partion4(int[] array,int left,int right){
+        int i=left;
+        int j=right;
+        int key=array[left];
+        for (int k = 1; k <j ; k++) {
+            if(array[k]<=key){
+                swamp(array,k,i);
+                i++;
+            }else if(array[k]>=key){
+                swamp(array,k,j);
+                j--;
+            }
+            if(k>j){
+                break;
+            }
+        }
+        return j;
+    }
     public static void swamp(int[] array, int j, int i) {
         int temp=array[i];
         array[i]=array[j];
@@ -195,7 +292,7 @@ public class TestSort {
         System.out.println(Arrays.toString(array));*/
        /*ts.selectSort1(array);
         System.out.println(Arrays.toString(array));*/
-       ts.bsInsertSort(array);
+        quickSort1(array);
         System.out.println(Arrays.toString(array));
        // ts.testTime();
 
