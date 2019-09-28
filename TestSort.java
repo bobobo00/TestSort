@@ -244,11 +244,16 @@ public class TestSort {
         int i=left;
         int j=right;
         int key=array[left];
-        for (int k = 1; k <j ; k++) {
-            if(array[k]<=key){
+        int k=left;
+        while(k<=j){
+            if(array[k]==key){
+                i++;
+            }
+            if(array[k]<key){
                 swamp(array,k,i);
                 i++;
-            }else if(array[k]>=key){
+                k++;
+            }else if(array[k]>key){
                 swamp(array,k,j);
                 j--;
             }
@@ -258,6 +263,59 @@ public class TestSort {
         }
         return j;
     }
+    //归并排序-递归
+    public static void mergeSort(int[] array){
+        mergeInsertSort(array,0,array.length);//【low,high)
+    }
+    public static void mergeInsertSort(int[] array,int low,int high){
+        if(low>=high-1){
+            return;
+        }
+        int mid=(low+high)/2;
+        mergeInsertSort(array,low,mid);
+        mergeInsertSort(array,mid,high);
+        merge(array,low,mid,high);
+    }
+
+    //归并排序-迭代
+    public static void mergeSort1(int[] array){
+        for (int i = 1; i <array.length ; i*=2) {
+            for (int j = 0; j <array.length ; j+=i*2) {
+                int low=j;
+                int mid=low+i;
+                if(mid>=array.length){
+                    continue;
+                }
+                int high=mid+i;
+                if(high>=array.length){
+                    high=array.length;
+                }
+                merge(array,low,mid,high);
+            }
+        }
+    }
+    public static void merge(int[] array,int low,int mid,int high ){
+        int len=high-low;
+        int[] arr=new int[len];
+        int i=low;
+        int j=mid;
+        int k=0;
+        while(i<mid&&j<high&&k<arr.length){
+            if(array[i]<=array[j]){
+                arr[k++]=array[i++];
+            }else {
+                arr[k++] = array[j++];
+            }
+        }
+        while(i<mid){
+            arr[k++]=array[i++];
+        }
+        while(j<high){
+            arr[k++]=array[j++];
+        }
+       System.arraycopy(arr,0,array,low,len);
+    }
+
     public static void swamp(int[] array, int j, int i) {
         int temp=array[i];
         array[i]=array[j];
@@ -292,7 +350,7 @@ public class TestSort {
         System.out.println(Arrays.toString(array));*/
        /*ts.selectSort1(array);
         System.out.println(Arrays.toString(array));*/
-        quickSort1(array);
+        quickSort(array,0,array.length-1);
         System.out.println(Arrays.toString(array));
        // ts.testTime();
 
